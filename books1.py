@@ -17,6 +17,13 @@ action = sys.argv[2]
 if action != "books" and action != "authors":
     print('Usage: Action must be "books" or "authors"', file=sys.stderr)
 
-sort_direction = sys.argv[3]
-if sort_direction != "forward" and sort_direction != "reverse" and sort_direction != "":
-    print('Usage: Action must be "forwards", "reverse" or nothing', file=sys.stderr)
+try:
+    sort_direction = sys.argv[3]
+except:
+    sort_direction = "forward"
+
+if sort_direction != "forward" and sort_direction != "reverse":
+    print('Usage: Action must be "forward", "reverse" or nothing', file=sys.stderr)
+
+
+#def sort(action, sort_direction)
