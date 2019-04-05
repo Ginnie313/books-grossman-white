@@ -1,8 +1,10 @@
 '''
 Testing some things
 '''
+#Credit to Danny Maya for helping with string stripping line
 import sys
 import csv
+import re
 
 def main():
     input_file = sys.argv[1] #probably want a file not found error here somewhere
@@ -28,6 +30,9 @@ def main():
     if action == "books":
         sortByBook(rows, sort_direction)
 
+    if action == "authors":
+        sortByAuthor(rows, sort_direction)
+
 def sortByBook(rows, sort_direction):
     booklist = []
     for row in rows:
@@ -42,7 +47,18 @@ def sortByBook(rows, sort_direction):
         print(item)
 
 
-#def sortByAuthor(rows, sort_direction)
+def sortByAuthor(rows, sort_direction):
+    authorlist = []
+    for row in rows:
+        item = row[2]
+        newitem = re.findall("[^0-9()\-\s]+", item)
+        authorlist.append(newitem)
+    authorlist.sort(key=takeLast)
+    for item in authorlist:
+        print(*item)
+
+def takeLast(elem):
+    return elem[-1][0]
 
 if __name__ == '__main__':
     main()
