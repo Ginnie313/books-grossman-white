@@ -1,23 +1,38 @@
 '''
-Testing some things
+books1.py
+Kate Grossman and Ginnie White, 8 March 2019
+
+A program that implements sorting a csv file by author and by book title
+(both forwards and backwards) from the command line.
+
+Credit to Danny Maya for helping with string stripping line
 '''
-#Credit to Danny Maya for helping with string stripping line
+
 import sys
 import csv
 import re
 
+
 def main():
-    input_file = sys.argv[1] #probably want a file not found error here somewhere
+
+    input_file = sys.argv[1]
+
     rows = []
     #read csv file
-    with open(input_file, 'r') as csvfile:
-        csvreader = csv.reader(csvfile)
-        for row in csvreader:
-            rows.append(row)
+    try:
+        with open(input_file, 'r') as csvfile:
+            csvreader = csv.reader(csvfile)
+            for row in csvreader:
+                rows.append(row)
+    except:
+        print("Usage: File not found", file=sys.stderr)
 
-    action = sys.argv[2]
-    if action != "books" and action != "authors":
-        print('Usage: Action must be "books" or "authors"', file=sys.stderr)
+    try:
+        action = sys.argv[2]
+        if action != "books" and action != "authors":
+            print('Usage: Action must be "books" or "authors"', file=sys.stderr)
+    except:
+        print("Usage: Need a third argument action")
 
     try:
         sort_direction = sys.argv[3]
@@ -25,7 +40,8 @@ def main():
         sort_direction = "forward"
 
     if sort_direction != "forward" and sort_direction != "reverse":
-        print('Usage: Action must be "forward", "reverse" or nothing', file=sys.stderr)
+        print("Usage: Action must be forward, reverse")
+        print("or nothing", file=sys.stderr)
 
     if action == "books":
         sortByBook(rows, sort_direction)
@@ -54,11 +70,17 @@ def sortByAuthor(rows, sort_direction):
         newitem = re.findall("[^0-9()\-\s]+", item)
         authorlist.append(newitem)
     authorlist.sort(key=takeLast)
+    if sort_direction == "reverse":
+        authorlist.reverse()
     for item in authorlist:
         print(*item)
 
 def takeLast(elem):
-    return elem[-1][0]
+    if "and" in elem:
+        andIndex = elem.index("and") -1
+        return elem[andIndex][0]
+    else:
+        return elem[-1][0]
 
 if __name__ == '__main__':
     main()
