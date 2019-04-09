@@ -22,7 +22,7 @@ class BooksDataSourceTest(unittest.TestCase):
         self.assertRaises(ValueError,self.books_checker.book, -1)
 
     def test_float(self):
-        self.assertRaises(ValueError,self.books_checker.book, 1.0)
+        self.assertRaises(TypeError,self.books_checker.book, 1.0)
 
 
     # Books function tests
@@ -30,6 +30,14 @@ class BooksDataSourceTest(unittest.TestCase):
     def test_invalid_id(self):
         self.assertRaises(ValueError, self.books_checker.books, author_id=-1, search_text=None, start_year=None, end_year=None, sort_by='title')
 
+    #Valid id test
+    #Values aren't None or integers (are we allowed to throw a type error?)
+    #Values are correctly typed
+    #Sort value is default
+    #Sort by isn't title, default or year
+    #No parameters
+    #Start year is higher than end year
+    #Start year is lower than end year
     # Authors function tests
 
     def test_invalid_id(self):
