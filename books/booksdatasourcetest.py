@@ -52,4 +52,4 @@ class BooksDataSourceTest(unittest.TestCase):
         self.assertRaises(ValueError,self.books_checker.author., -1)
 
     def test_float(self):
-        self.assertRaises(ValueError,self.books_checker.book.author, 1.0)
+        self.assertRaises(TypeError,self.books_checker.book.author, 1.0)
