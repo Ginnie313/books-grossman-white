@@ -60,14 +60,14 @@ class BooksDataSource:
             NOTE TO STUDENTS: I have not specified how you will store the books/authors
             data in a BooksDataSource object. That will be up to you, in Phase 3.
         '''
-
-        self.booksList = self.create_booksList()
+	# Create all instance variables needed in the class
+        self.create_booksList()
         self.create_authorsList()
-        self.linkList = self.create_linkList()
+        self.create_linkList()
 
         self.create_author_list_of_Dict()
-        self.book_list_of_Dict = self.create_book_list_of_Dict()
-        self.link_list_of_Dict = self.create_link_list_of_Dict()
+        self.create_book_list_of_Dict()
+        self.create_link_list_of_Dict()
 
 
     def book(self, book_id):
