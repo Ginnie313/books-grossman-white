@@ -116,16 +116,24 @@ class BooksDataSource:
 
         author_id_list = []
         if author_id != None:
+            book_id_list = []
+            for item in self.link_list_of_Dict:
+                for key in item:
+                    if item.get(key) == author_id:
+                        book_id_list.append(key)
             for book in sorted_books:
-                if book.get('author_id') == str(author_id):
+                if book.get('id') in book_id_list:
                     author_id_list.append(book)
         else:
             author_id_list = sorted_books
 
-        search_text_list = []  ******DOES NOT WORK********
+        search_text_list = []
         if search_text != None:
+            case_insensitive_seach_text_books = search_text.lower()
+
             for book in author_id_list:
-                if book.get('search_text') == str(search_text):
+                lower_dict = self.lower_case_dict(book)
+                if case_insensitive_seach_text_books in lower_dict.get('title'):
                     search_text_list.append(book)
         else:
             search_text_list = author_id_list
@@ -133,7 +141,7 @@ class BooksDataSource:
         start_year_list = []
         if start_year != None:
             for book in search_text_list:
-                if book.get('start_year') >= str(start_year):
+                if int(book.get('publication_year')) >= int(start_year):
                     start_year_list.append(book)
         else:
             start_year_list = search_text_list
@@ -141,9 +149,9 @@ class BooksDataSource:
         end_year_list = []
         if end_year != None:
             for book in start_year_list:
-                if book.get('end_year') <= str(end_year):
+                if int(book.get('publication_year')) <= int(end_year):
                     end_year_list.append(book)
-        else if start_year != None and end_year < start_year: ***NOT SURE, BUT SOMETHING ALONG THESE LINES******
+        if start_year != None and end_year != None and int(end_year) < int(start_year):
             end_year_list = []
         else:
             end_year_list = start_year_list
@@ -182,45 +190,63 @@ class BooksDataSource:
             See the BooksDataSource comment for a description of how an author is represented.
         '''
         if sort_by == 'birth_year':
-            sorted_authors = sorted(self.book_list_of_Dict, key = lambda i: i["birth_year"])
+            sorted_authors = sorted(self.author_list_of_Dict, key = lambda i: i["birth_year"])
         else:
-            sorted_authors = sorted(self.book_list_of_Dict, key = lambda i: i["last_name", "first name"]) ********NOT SURE ABOUT PARAMETERS*********
+            sorted_authors = sorted(self.author_list_of_Dict, key = lambda i: i["last_name"])
 
         book_id_list = []
+        author_id=""
         if book_id != None:
+            author_id_list = []
+            for item in self.link_list_of_Dict:
+                if book_id in item.keys():
+                    author_id_list.append(item.get(book_id))
+
             for book in sorted_authors:
-                if book.get('book_id') == str(book_id):
+                if book.get('id') in author_id_list:
                     book_id_list.append(book)
         else:
             book_id_list = sorted_authors
 
-        search_text_authors_list = []  ******DOES NOT WORK ---- SAME PROBLEM********
+        search_text_authors_list = []
         if search_text != None:
+            case_insensitive_seach_text_author = search_text.lower()
             for book in book_id_list:
-                if book.get('search_text') == str(search_text):
+                lower_dict = self.lower_case_dict(book)
+                if search_text in book.get('first_name') or search_text in book.get('last_name'):
                     search_text_authors_list.append(book)
         else:
-            search_text_list = author_id_list
+            search_text_authors_list = book_id_list
 
         start_year_authors_list = []
+        #Returns all authors alive after start year
         if start_year != None:
-            for book in search_text_list:
-                if book.get('start_year') >= str(start_year):
+            for book in search_text_authors_list:
+                #Author died after start year
+                if book.get('death_year') != "NULL" and int(book.get('death_year')) >= int(start_year):
+                    start_year_authors_list.append(book)
+                #Author was born after start year
+                if int(book.get('birth_year')) >= int(start_year):
+                    start_year_authors_list.append(book)
+                #Author was born before start year and hasn't died yet
+                if book.get('death_year') == "NULL" and int(book.get('birth_year')) <= int(start_year):
                     start_year_authors_list.append(book)
         else:
-            start_year__authors_list = search_text_authors_list
+            start_year_authors_list = search_text_authors_list
 
-        end_year__authors_list = []
+        end_year_authors_list = []
+        #Returns all authors alive before end year
         if end_year != None:
             for book in start_year_authors_list:
-                if book.get('end_year') <= str(end_year):
+                #Author died before end year
+                if book.get('death_year')!= "NULL" and book.get('death_year') <= int(end_year) or books.get('birth_year') <= int(end_year):
                     end_year_authors_list.append(book)
-        else if start_year != None and end_year < start_year: ***NOT SURE, BUT SOMETHING ALONG THESE LINES******
+        if start_year != None and end_year != None and int(end_year) < int(start_year):
             end_year_authors_list = []
         else:
-            end_year__authorslist = start_year__authors_list
+            end_year_authors_list = start_year_authors_list
 
-        return end_year__authors_list
+        return end_year_authors_list
 
     def create_booksList(self):
         with open('books.csv', "r") as csvfile:
@@ -252,7 +278,7 @@ class BooksDataSource:
     def create_author_list_of_Dict(self):
         for item in self.authorsList:
             dict = {
-            'author_id': item[0], 'last_name': item[1], 'first_name': item[2],
+            'id': item[0], 'last_name': item[1], 'first_name': item[2],
             'birth_year': item[3], 'death_year': item[4]
             }
             self.author_list_of_Dict.append(dict)
@@ -261,7 +287,7 @@ class BooksDataSource:
     def create_book_list_of_Dict(self):
         for item in self.booksList:
             dict = {
-            "author_id": item[0],
+            "id": item[0],
             "title": item[1],
             "publication_year": item[2],
             }
@@ -276,6 +302,10 @@ class BooksDataSource:
             self.link_list_of_Dict.append(dict)
         return self.link_list_of_Dict
 
+    def lower_case_dict(self, dictionary):
+        new_dict = dict((k.lower(), v.lower()) for k, v in dictionary.items())
+        return new_dict
+
 
 if __name__ == '__main__':
     test = BooksDataSource("books.csv", "authors.csv", "books_authors.csv")
@@ -284,4 +314,6 @@ if __name__ == '__main__':
     #print(test.book_list_of_Dict)
     #print(test.link_list_of_Dict)
     #print(test.book(100))
-    test.books(search_text)
+    #print(test.books(search_text="All"))
+    print(test.authors(start_year="2010"))
+    #print(test.authors(book_id="0"))
