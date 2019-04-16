@@ -22,7 +22,6 @@ class BooksDataSourceTest(unittest.TestCase):
 
     #  Book function tests
 
-
     def test_zero_book(self):
         self.assertEqual(self.books_checker.book(0), {'id': '0', 'title': 'All Clear', 'publication_year': '2010'})
 
@@ -35,7 +34,6 @@ class BooksDataSourceTest(unittest.TestCase):
 
 
     # Books function tests
-
 
     def test_invalid_id_books(self):
         self.assertRaises(ValueError, self.books_checker.books, author_id="-1")
@@ -91,7 +89,6 @@ class BooksDataSourceTest(unittest.TestCase):
 
 
     # Authors function tests
-
 
     def test_invalid_id_authors(self):
         self.assertRaises(ValueError, self.books_checker.authors, book_id="-1")
@@ -157,7 +154,6 @@ class BooksDataSourceTest(unittest.TestCase):
 
 
     # Author function tests
-
 
     def test_zero_author(self):
         self.assertEqual(self.books_checker.author(0), {"id":"0", "last_name":"Willis",
