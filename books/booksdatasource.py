@@ -79,13 +79,17 @@ class BooksDataSource:
         self.authors_filename = "authors.csv"
         self.books_authors_link_filename = "books_authors.csv"
 
-        books_rows = read_file(books_filename)
-        authors_rows= read_file(authors_filename)
-        link_rows = read_file(books_authors_link_filename)
+        books_rows = self.read_file(books_filename)
+        authors_rows= self.read_file(authors_filename)
+        link_rows = self.read_file(books_authors_link_filename)
 
-        booksList = create_bookslist(books_rows)
-        authorsList = create_authorslist(authors_rows)
-        linkList = create_linkList(link_rows)
+        global booksList
+        global authorsList
+        global linkList
+
+        self.booksList = self.create_bookslist(books_rows)
+        self.authorsList = self.create_authorslist(authors_rows)
+        self.linkList = self.create_linkList(link_rows)
 
 
 
@@ -97,8 +101,8 @@ class BooksDataSource:
         '''
         try:
             bookDict = booksList[book_id]
-            title = bookDict.key(title)
-            firstName = bookDict.key(first_name)
+            title = bookDict.get(title)
+            firstName = bookDict.get(first_name)
             return [title]
         except ValueError:
             print('Usage: ID out of range.')
@@ -144,8 +148,8 @@ class BooksDataSource:
         '''
         try:
             authorDict = authorsList[author_id]
-            lastName = authorDict.key(last_name)
-            firstName = authorDict.key(first_name)
+            lastName = authorDict.get(last_name)
+            firstName = authorDict.get(first_name)
             return [firstName, lastName]
         except ValueError:
             print('Usage: ID out of range.')
@@ -178,42 +182,42 @@ class BooksDataSource:
         '''
         return []
 
-        def read_file(input_file):
-            rows = []
+    def read_file(self, input_file):
+        rows = []
 
-            try:
-                with open(input_file, 'r') as csvfile:
-                    csvreader = csv.reader(csvfile)
-                    for row in csvreader:
-                        rows.append(row)
-                    return rows
-            except:
-                print("Usage: File not found", file=sys.stderr)
+        try:
+            with open(input_file, 'r') as csvfile:
+                csvreader = csv.reader(csvfile)
+                for row in csvreader:
+                    rows.append(row)
+                return rows
+        except:
+            print("Usage: File not found", file=sys.stderr)
 
-        def create_bookslist(books_rows):
-            booksList = []
-            for row in books_rows:
-                dict = {
-                "id": row[0],
-                "title": row[1],
-                "publication year":, row[2],
-                }
-                booksList.append(dict)
+    def create_bookslist(self, books_rows):
+        booksList = []
+        for row in books_rows:
+            dict = {
+            "id": row[0],
+            "title": row[1],
+            "publication year": row[2],
+            }
+            booksList.append(dict)
 
 
-        def create_authorslist(authors_rows):
-            authorList = []
-            for row in authors_rows:
-                dict = {
-                'id': row[0], 'last_name': row[1], 'first_name': row[2],
-                 'birth_year': row[3], 'death_year': row[4]}
-                }
-                booksList.append(dict)
+    def create_authorslist(self, authors_rows):
+        authorList = []
+        for row in authors_rows:
+            dict = {
+            'id': row[0], 'last_name': row[1], 'first_name': row[2],
+            'birth_year': row[3], 'death_year': row[4]
+            }
+            authorList.append(dict)
 
-        def create_linkList(link_rows):
-            linkList = []
-            for row in link_rows:
-                dict = {
-                row[0]: row[1],
-                }
-                booksList.append(dict)
+    def create_linkList(self, link_rows):
+        linkList = []
+        for row in link_rows:
+            dict = {
+            row[0]: row[1],
+            }
+            linkList.append(dict)
