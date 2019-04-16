@@ -35,12 +35,6 @@ class BooksDataSource:
     (assuming an ID of 132) would look like this:
         {'id': 193, 'title': 'A Wild Sheep Chase', 'publication_year': 1982}
     '''
-    booksList = []
-    authorsList = []
-    linkList = []
-    author_list_of_Dict = []
-    book_list_of_Dict = []
-    link_list_of_Dict = []
 
 
     def __init__(self, books_filename, authors_filename, books_authors_link_filename):
@@ -66,10 +60,10 @@ class BooksDataSource:
         '''
 
         self.booksList = self.create_booksList()
-        self.authorsList = self.create_authorsList()
+        self.create_authorsList()
         self.linkList = self.create_linkList()
 
-        self.author_list_of_Dict = self.create_author_list_of_Dict()
+        self.create_author_list_of_Dict()
         self.book_list_of_Dict = self.create_book_list_of_Dict()
         self.link_list_of_Dict = self.create_link_list_of_Dict()
 
@@ -115,11 +109,15 @@ class BooksDataSource:
             sorted_books = sorted(self.book_list_of_Dict, key = lambda i: i["title"])
 
         author_id_list = []
+
         if author_id != None:
+            if int(author_id) < 0 or int(author_id) > len(self.author_list_of_Dict):
+                raise ValueError
+
             book_id_list = []
             for item in self.link_list_of_Dict:
                 for key in item:
-                    if item.get(key) == author_id:
+                    if int(item.get(key)) == int(author_id):
                         book_id_list.append(key)
             for book in sorted_books:
                 if book.get('id') in book_id_list:
@@ -151,10 +149,10 @@ class BooksDataSource:
             for book in start_year_list:
                 if int(book.get('publication_year')) <= int(end_year):
                     end_year_list.append(book)
-        if start_year != None and end_year != None and int(end_year) < int(start_year):
-            end_year_list = []
         else:
             end_year_list = start_year_list
+        if start_year != None and end_year != None and int(end_year) < int(start_year):
+            end_year_list = []
 
         return end_year_list
 
@@ -163,13 +161,13 @@ class BooksDataSource:
             description of how an author is represented.)
             Raises ValueError if author_id is not a valid author ID.
         '''
-        if author_id < 0 or author_id > len(self.author_list_of_Dict):
+        if int(author_id) < 0 or int(author_id) > len(self.author_list_of_Dict):
             raise ValueError("The ID is out of range.")
         else:
-            requested_author = self.author_list_of_Dict[author_id]
+            requested_author = self.author_list_of_Dict[int(author_id)]
             return(requested_author)
 
-    def authors(self, *, book_id=None, search_text=None, start_year=None, end_year=None, sort_by='birth_year'):
+    def authors(self, *, book_id=None, search_text=None, start_year=None, end_year=None, sort_by='last_name'):
         ''' Returns a list of all the authors in this data source matching all of the
             specified non-None criteria.
                 book_id - only returns authors of the specified book
@@ -190,13 +188,19 @@ class BooksDataSource:
             See the BooksDataSource comment for a description of how an author is represented.
         '''
         if sort_by == 'birth_year':
-            sorted_authors = sorted(self.author_list_of_Dict, key = lambda i: i["birth_year"])
+            sorted_authors = sorted(self.author_list_of_Dict, key = lambda i:
+            (i["birth_year"], i["last_name"], i["first_name"]))
         else:
-            sorted_authors = sorted(self.author_list_of_Dict, key = lambda i: i["last_name"])
+            sorted_authors = sorted(self.author_list_of_Dict, key = lambda i:
+            (i["last_name"], i['first_name'], i['birth_year']))
 
         book_id_list = []
         author_id=""
+
         if book_id != None:
+            if int(book_id) < 0 or int(book_id) > len(self.book_list_of_Dict):
+                raise ValueError
+                print("Value error detected")
             author_id_list = []
             for item in self.link_list_of_Dict:
                 if book_id in item.keys():
@@ -231,6 +235,8 @@ class BooksDataSource:
                 #Author was born before start year and hasn't died yet
                 if book.get('death_year') == "NULL" and int(book.get('birth_year')) <= int(start_year):
                     start_year_authors_list.append(book)
+                if int(start_year) > 2019:
+                    start_year_authors_list = []
         else:
             start_year_authors_list = search_text_authors_list
 
@@ -238,17 +244,20 @@ class BooksDataSource:
         #Returns all authors alive before end year
         if end_year != None:
             for book in start_year_authors_list:
-                #Author died before end year
-                if book.get('death_year')!= "NULL" and int(book.get('death_year')) <= int(end_year) or int(book.get('birth_year')) <= int(end_year):
+                #Author born before end year
+                if book.get('death_year')!= "NULL" and int(book.get('birth_year')) <= int(end_year):
                     end_year_authors_list.append(book)
-        if start_year != None and end_year != None and int(end_year) < int(start_year):
-            end_year_authors_list = []
+                #Author born before end year, died after
         else:
             end_year_authors_list = start_year_authors_list
+        if start_year != None and end_year != None and int(end_year) < int(start_year):
+            end_year_authors_list = []
+
 
         return end_year_authors_list
 
     def create_booksList(self):
+        self.booksList=[]
         with open('books.csv', "r") as csvfile:
             reader = csv.reader(csvfile)
 
@@ -258,15 +267,15 @@ class BooksDataSource:
         return self.booksList
 
     def create_authorsList(self):
+        self.authorsList = []
         with open('authors.csv', "r") as csvfile:
             reader = csv.reader(csvfile)
 
             for author in reader:
                 self.authorsList.append(author)
 
-        return self.authorsList
-
     def create_linkList(self):
+        self.linkList=[]
         with open('books_authors.csv', "r") as csvfile:
             reader = csv.reader(csvfile)
 
@@ -276,15 +285,16 @@ class BooksDataSource:
         return self.linkList
 
     def create_author_list_of_Dict(self):
+        self.author_list_of_Dict = []
         for item in self.authorsList:
             dict = {
             'id': item[0], 'last_name': item[1], 'first_name': item[2],
             'birth_year': item[3], 'death_year': item[4]
             }
             self.author_list_of_Dict.append(dict)
-        return self.author_list_of_Dict
 
     def create_book_list_of_Dict(self):
+        self.book_list_of_Dict=[]
         for item in self.booksList:
             dict = {
             "id": item[0],
@@ -295,6 +305,7 @@ class BooksDataSource:
         return self.book_list_of_Dict
 
     def create_link_list_of_Dict(self):
+        self.link_list_of_Dict=[]
         for item in self.linkList:
             dict = {
             item[0]: item[1],
@@ -309,11 +320,4 @@ class BooksDataSource:
 
 if __name__ == '__main__':
     test = BooksDataSource("books.csv", "authors.csv", "books_authors.csv")
-    #print(test.authorsList)
-    #print(test.author_list_of_Dict)
-    #print(test.book_list_of_Dict)
-    #print(test.link_list_of_Dict)
-    #print(test.book(100))
-    print(test.books(search_text="All"))
-    #print(test.authors(start_year="2010"))
-    #print(test.authors(book_id="0"))
+    print(test.authors(start_year="3000"))
