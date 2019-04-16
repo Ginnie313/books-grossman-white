@@ -40,7 +40,7 @@ class BooksDataSource:
     Mark Twain? Are Voltaire and Molière first names or last names? etc.
 
     A book is represented as a dictionary with the keys 'id', 'title',
-    and 'publication_year'. For example, "Pride and Prejudice"
+    and 'pu'\'ar'. For example, "Pride and Prejudice"
     (assuming an ID of 132) would look like this:
 
         {'id': 193, 'title': 'A Wild Sheep Chase', 'publication_year': 1982}
@@ -98,8 +98,8 @@ class BooksDataSource:
 
             Raises ValueError if book_id is not a valid book ID.
         '''
-        if book_id < 0 or book_id > len(self.book_list_of_Dict) - 1:
-            raise ValueError
+        if book_id < 0 or book_id > len(self.book_list_of_Dict):
+            raise ValueError("The ID is out of range.")
         else:
             requested_book = self.book_list_of_Dict[book_id]
             return(requested_book)
@@ -134,7 +134,47 @@ class BooksDataSource:
             Raises ValueError if author_id is non-None but is not a valid author ID.
 				OUR ANSWER: Yes, but just for author_id.
         '''
-        return []
+
+        if sort_by == 'year':
+            sorted_books = sorted(self.book_list_of_Dict, key = lambda i: i["publication_year"])
+        else:
+            sorted_books = sorted(self.book_list_of_Dict, key = lambda i: i["title"])
+
+        author_id_list = []
+        if author_id != None:
+            for book in sorted_books:
+                if book.get('author_id') == str(author_id):
+                    author_id_list.append(book)
+        else:
+            author_id_list = sorted_books
+
+        search_text_list = []  ******DOES NOT WORK********
+        if search_text != None:
+            for book in author_id_list:
+                if book.get('search_text') == str(search_text):
+                    search_text_list.append(book)
+        else:
+            search_text_list = author_id_list
+
+        start_year_list = []
+        if start_year != None:
+            for book in search_text_list:
+                if book.get('start_year') >= str(start_year):
+                    start_year_list.append(book)
+        else:
+            start_year_list = search_text_list
+
+        end_year_list = []
+        if end_year != None:
+            for book in start_year_list:
+                if book.get('end_year') <= str(end_year):
+                    end_year_list.append(book)
+        else if start_year != None and end_year < start_year: ***NOT SURE, BUT SOMETHING ALONG THESE LINES******
+            end_year_list = []
+        else:
+            end_year_list = start_year_list
+
+        return end_year_list
 
     def author(self, author_id):
         ''' Returns the author with the specified ID. (See the BooksDataSource comment for a
@@ -144,10 +184,9 @@ class BooksDataSource:
         '''
         try:
             requested_author = self.author_list_of_Dict[author_id]
-        except:
-            pass
-        return requested_author
-
+            return(requested_author)
+        except IndexError:
+            raise ValueError("The ID is out of range.")
 
     def authors(self, *, book_id=None, search_text=None, start_year=None, end_year=None, sort_by='birth_year'):
         ''' Returns a list of all the authors in this data source matching all of the
@@ -174,7 +213,46 @@ class BooksDataSource:
 
             See the BooksDataSource comment for a description of how an author is represented.
         '''
-        return []
+        if sort_by == 'birth_year':
+            sorted_authors = sorted(self.book_list_of_Dict, key = lambda i: i["birth_year"])
+        else:
+            sorted_authors = sorted(self.book_list_of_Dict, key = lambda i: i["last_name", "first name"]) ********NOT SURE ABOUT PARAMETERS*********
+
+        book_id_list = []
+        if book_id != None:
+            for book in sorted_authors:
+                if book.get('book_id') == str(book_id):
+                    book_id_list.append(book)
+        else:
+            book_id_list = sorted_authors
+
+        search_text_authors_list = []  ******DOES NOT WORK ---- SAME PROBLEM********
+        if search_text != None:
+            for book in book_id_list:
+                if book.get('search_text') == str(search_text):
+                    search_text_authors_list.append(book)
+        else:
+            search_text_list = author_id_list
+
+        start_year_authors_list = []
+        if start_year != None:
+            for book in search_text_list:
+                if book.get('start_year') >= str(start_year):
+                    start_year_authors_list.append(book)
+        else:
+            start_year__authors_list = search_text_authors_list
+
+        end_year__authors_list = []
+        if end_year != None:
+            for book in start_year_authors_list:
+                if book.get('end_year') <= str(end_year):
+                    end_year_authors_list.append(book)
+        else if start_year != None and end_year < start_year: ***NOT SURE, BUT SOMETHING ALONG THESE LINES******
+            end_year_authors_list = []
+        else:
+            end_year__authorslist = start_year__authors_list
+
+        return end_year__authors_list
 
     def create_booksList(self):
         with open('books.csv', "r") as csvfile:
@@ -206,7 +284,7 @@ class BooksDataSource:
     def create_author_list_of_Dict(self):
         for item in self.authorsList:
             dict = {
-            'id': item[0], 'last_name': item[1], 'first_name': item[2],
+            'author_id': item[0], 'last_name': item[1], 'first_name': item[2],
             'birth_year': item[3], 'death_year': item[4]
             }
             self.author_list_of_Dict.append(dict)
@@ -215,9 +293,9 @@ class BooksDataSource:
     def create_book_list_of_Dict(self):
         for item in self.booksList:
             dict = {
-            "id": item[0],
+            "author_id": item[0],
             "title": item[1],
-            "publication year": item[2],
+            "publication_year": item[2],
             }
             self.book_list_of_Dict.append(dict)
         return self.book_list_of_Dict
@@ -237,4 +315,5 @@ if __name__ == '__main__':
     #print(test.author_list_of_Dict)
     #print(test.book_list_of_Dict)
     #print(test.link_list_of_Dict)
-    print(test.book(100))
+    #print(test.book(100))
+    test.books(search_text)
