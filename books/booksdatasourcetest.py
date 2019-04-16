@@ -27,11 +27,11 @@ class BooksDataSourceTest(unittest.TestCase):
         self.assertEqual(self.books_checker.book(0), {'id': '0', 'title': 'All Clear', 'publication year': '2010'})
 
     def test_negative_book(self):
-        self.assertRaises(ValueError,self.books_checker.book, -1)
+        self.assertRaises(ValueError,self.books_checker.book, "-1")
 
     def test_larger_than_max_book(self):
         #self.assertRaises(ValueError, self.raiseValueError)
-        self.assertRaises(ValueError,self.books_checker.book, 100)
+        self.assertRaises(ValueError,self.books_checker.book, "100")
     def raiseValueError(self):
         raise ValueError
 
@@ -40,13 +40,16 @@ class BooksDataSourceTest(unittest.TestCase):
 
 
     def test_invalid_id_books(self):
-        self.assertRaises(ValueError, self.books_checker.books, author_id=-1)
+        self.assertRaises(ValueError, self.books_checker.books, author_id="-1")
 
     def test_valid_id_books(self):
-        self.assertEqual(self.books_checker.books(author_id=0), ['All Clear'])
+        self.assertEqual(self.books_checker.books(author_id="0"), [{'id': '0', 'title': 'All Clear', 'publication_year': '2010'},
+        {'id': '3', 'title': 'Blackout', 'publication_year': '2010'},
+        {'id': '27', 'title': 'To Say Nothing of the Dog', 'publication_year': '1997'}])
 
     def test_search_text_books(self):
-        self.assertEqual(self.books_checker.books(search_text="Jane"), ["Jane Eyre"])
+        self.assertEqual(self.books_checker.books(search_text="Jane"),
+        [{'id': '7', 'title': 'Jane Eyre', 'publication_year': '1847'}])
 
     def test_start_year__default_books(self):
         self.assertEqual(self.books_checker.books(start_year=2010),
@@ -88,21 +91,21 @@ class BooksDataSourceTest(unittest.TestCase):
 
 
     def test_invalid_id_authors(self):
-        self.assertRaises(ValueError, self.books_checker.authors, book_id=-1)
+        self.assertRaises(ValueError, self.books_checker.authors, book_id="-1")
 
     def test_valid_id_authors(self):
-        self.assertEqual(self.books_checker.authors(book_id=0),["Connie", "Willis"])
+        self.assertEqual(self.books_checker.authors(book_id="0"),["Connie", "Willis"])
 
     def test_search_text_authors(self):
-        self.assertEqual(self.books_checker.authors(search_text="Ton"),
-        [["Toni", "Morrison"],["Toni", "Morrison"]])
+        self.assertEqual(self.books_checker.authors(search_text="Toni"),
+        [{'author_id': '2', 'last_name': 'Morrison', 'first_name': 'Toni', 'birth_year': '1931', 'death_year': 'NULL'}])
 
     def test_start_year_authors(self):
-        self.assertEqual(self.books_checker.authors(start_year=1976),
+        self.assertEqual(self.books_checker.authors(start_year="1976"),
         [["Naomi", "Alderman"]])
 
     def test_end_year_authors(self):
-        self.assertEqual(self.books_checker.authors(end_year=1776),
+        self.assertEqual(self.books_checker.authors(end_year="1776"),
         [["Jane", "Austen"]])
 
     def test_search_by_birth_year_authors(self):
