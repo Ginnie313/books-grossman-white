@@ -79,10 +79,10 @@ class BooksDataSource:
             for a description of how a book is represented.)
             Raises ValueError if book_id is not a valid book ID.
         '''
-        if book_id < 0 or book_id > len(self.book_list_of_Dict):
+        if int(book_id) < 0 or int(book_id) > len(self.book_list_of_Dict):
             raise ValueError("The ID is out of range.")
         else:
-            requested_book = self.book_list_of_Dict[book_id]
+            requested_book = self.book_list_of_Dict[int(book_id)]
             return(requested_book)
 
 
@@ -239,7 +239,7 @@ class BooksDataSource:
         if end_year != None:
             for book in start_year_authors_list:
                 #Author died before end year
-                if book.get('death_year')!= "NULL" and book.get('death_year') <= int(end_year) or books.get('birth_year') <= int(end_year):
+                if book.get('death_year')!= "NULL" and int(book.get('death_year')) <= int(end_year) or int(book.get('birth_year')) <= int(end_year):
                     end_year_authors_list.append(book)
         if start_year != None and end_year != None and int(end_year) < int(start_year):
             end_year_authors_list = []
@@ -314,6 +314,6 @@ if __name__ == '__main__':
     #print(test.book_list_of_Dict)
     #print(test.link_list_of_Dict)
     #print(test.book(100))
-    #print(test.books(search_text="All"))
-    print(test.authors(start_year="2010"))
+    print(test.books(search_text="All"))
+    #print(test.authors(start_year="2010"))
     #print(test.authors(book_id="0"))

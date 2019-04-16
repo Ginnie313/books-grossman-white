@@ -24,7 +24,7 @@ class BooksDataSourceTest(unittest.TestCase):
 
 
     def test_zero_book(self):
-        self.assertEqual(self.books_checker.book(0), {'id': '0', 'title': 'All Clear', 'publication year': '2010'})
+        self.assertEqual(self.books_checker.book(0), {'id': '0', 'title': 'All Clear', 'publication_year': '2010'})
 
     def test_negative_book(self):
         self.assertRaises(ValueError,self.books_checker.book, "-1")
