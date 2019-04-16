@@ -146,9 +146,7 @@ class BooksDataSource:
             requested_author = self.author_list_of_Dict[author_id]
             name_list = []
             name_list = [requested_author.get('first_name'), requested_author.get('last_name')]
-            return(name_list)
-        except ValueError:
-            print('Usage: ID out of range.')
+        return(name_list)
 
 
     def authors(self, *, book_id=None, search_text=None, start_year=None, end_year=None, sort_by='birth_year'):
@@ -239,4 +237,4 @@ if __name__ == '__main__':
     #print(test.author_list_of_Dict)
     #print(test.book_list_of_Dict)
     #print(test.link_list_of_Dict)
-    print(test.book(100))
+    print(test.author(100))
