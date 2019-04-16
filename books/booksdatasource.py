@@ -3,6 +3,7 @@
     booksdatasource.py
     Jeff Ondich, 18 September 2018
     Modified by Eric Alexander, April 2019
+    Modified by Kate Grossman and Ginnie White, April 2019
 
     For use in some assignments at the beginning of Carleton's
     CS 257 Software Design class.
