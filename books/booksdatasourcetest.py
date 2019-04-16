@@ -24,13 +24,16 @@ class BooksDataSourceTest(unittest.TestCase):
 
 
     def test_zero_book(self):
-        self.assertEqual(self.books_checker.book(0), "All Clear")
+        self.assertEqual(self.books_checker.book(0), {'id': '0', 'title': 'All Clear', 'publication year': '2010'})
 
     def test_negative_book(self):
         self.assertRaises(ValueError,self.books_checker.book, -1)
 
     def test_larger_than_max_book(self):
+        #self.assertRaises(ValueError, self.raiseValueError)
         self.assertRaises(ValueError,self.books_checker.book, 100)
+    def raiseValueError(self):
+        raise ValueError
 
 
     # Books function tests
@@ -134,7 +137,7 @@ class BooksDataSourceTest(unittest.TestCase):
 
 
     def test_zero_authors(self):
-        self.assertEqual(self.books_checker.author(0), "Willis, Connie")
+        self.assertEqual(self.books_checker.author(0), {"id":"0", "last_name":"Willis", "first_name": "Connie", "birth_year":"1945"})
 
     def test_negative_authors(self):
         self.assertRaises(ValueError,self.books_checker.author, -1)
