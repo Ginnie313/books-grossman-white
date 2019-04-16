@@ -4,6 +4,8 @@
     Modified by Eric Alexander, April 2019
     For use in some assignments at the beginning of Carleton's
     CS 257 Software Design class.
+
+    Kate Grossman and Ginnie White, 9/16/19
 '''
 import csv
 
@@ -108,8 +110,8 @@ class BooksDataSource:
         else:
             sorted_books = sorted(self.book_list_of_Dict, key = lambda i: i["title"])
 
+        #Apply author_id parameter to list
         author_id_list = []
-
         if author_id != None:
             if int(author_id) < 0 or int(author_id) > len(self.author_list_of_Dict):
                 raise ValueError
@@ -125,6 +127,7 @@ class BooksDataSource:
         else:
             author_id_list = sorted_books
 
+        #Apply serch_text parameter to list
         search_text_list = []
         if search_text != None:
             case_insensitive_seach_text_books = search_text.lower()
@@ -136,6 +139,7 @@ class BooksDataSource:
         else:
             search_text_list = author_id_list
 
+        #Apply start_year to list
         start_year_list = []
         if start_year != None:
             for book in search_text_list:
@@ -144,6 +148,7 @@ class BooksDataSource:
         else:
             start_year_list = search_text_list
 
+        #Apply end_year parameter to list
         end_year_list = []
         if end_year != None:
             for book in start_year_list:
@@ -156,6 +161,7 @@ class BooksDataSource:
 
         return end_year_list
 
+
     def author(self, author_id):
         ''' Returns the author with the specified ID. (See the BooksDataSource comment for a
             description of how an author is represented.)
@@ -166,6 +172,7 @@ class BooksDataSource:
         else:
             requested_author = self.author_list_of_Dict[int(author_id)]
             return(requested_author)
+
 
     def authors(self, *, book_id=None, search_text=None, start_year=None, end_year=None, sort_by='last_name'):
         ''' Returns a list of all the authors in this data source matching all of the
@@ -194,9 +201,9 @@ class BooksDataSource:
             sorted_authors = sorted(self.author_list_of_Dict, key = lambda i:
             (i["last_name"], i['first_name'], i['birth_year']))
 
+        #Apply book_id parameter to list
         book_id_list = []
         author_id=""
-
         if book_id != None:
             if int(book_id) < 0 or int(book_id) > len(self.book_list_of_Dict):
                 raise ValueError
@@ -212,6 +219,7 @@ class BooksDataSource:
         else:
             book_id_list = sorted_authors
 
+        #Apply search_text parameter to list.
         search_text_authors_list = []
         if search_text != None:
             case_insensitive_seach_text_author = search_text.lower()
@@ -222,24 +230,22 @@ class BooksDataSource:
         else:
             search_text_authors_list = book_id_list
 
-        start_year_authors_list = []
-        #Returns all authors alive after start year
+        #Apply start_year to list
+        start_year_authors_list = [] #All authors alive after start year
         if start_year != None:
             for book in search_text_authors_list:
-                #Author died after start year
-                if book.get('death_year') != "NULL" and int(book.get('death_year')) >= int(start_year):
+                if book.get('death_year') != "NULL" and int(book.get('death_year')) >= int(start_year): #Author died after start year
                     start_year_authors_list.append(book)
-                #Author was born after start year
-                if int(book.get('birth_year')) >= int(start_year):
+                if int(book.get('birth_year')) >= int(start_year): #Author was born after start year
                     start_year_authors_list.append(book)
-                #Author was born before start year and hasn't died yet
-                if book.get('death_year') == "NULL" and int(book.get('birth_year')) <= int(start_year):
+                if book.get('death_year') == "NULL" and int(book.get('birth_year')) <= int(start_year):  #Author was born before start year and hasn't died yet
                     start_year_authors_list.append(book)
                 if int(start_year) > 2019:
                     start_year_authors_list = []
         else:
             start_year_authors_list = search_text_authors_list
 
+        #Apply start_year end_year parameters to list
         end_year_authors_list = []
         #Returns all authors alive before end year
         if end_year != None:
@@ -255,6 +261,9 @@ class BooksDataSource:
 
 
         return end_year_authors_list
+
+
+#Creating the lists and dictionaries
 
     def create_booksList(self):
         self.booksList=[]
@@ -316,8 +325,3 @@ class BooksDataSource:
     def lower_case_dict(self, dictionary):
         new_dict = dict((k.lower(), v.lower()) for k, v in dictionary.items())
         return new_dict
-
-
-if __name__ == '__main__':
-    test = BooksDataSource("books.csv", "authors.csv", "books_authors.csv")
-    print(test.authors(start_year="3000"))
