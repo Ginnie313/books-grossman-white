@@ -3,11 +3,11 @@
     booksdatasource.py
     Jeff Ondich, 18 September 2018
     Modified by Eric Alexander, April 2019
-    Modified by Kate Grossman and Ginnie White, April 2019
 
     For use in some assignments at the beginning of Carleton's
     CS 257 Software Design class.
 '''
+import csv
 
 class BooksDataSource:
     '''
@@ -75,7 +75,19 @@ class BooksDataSource:
             NOTE TO STUDENTS: I have not specified how you will store the books/authors
             data in a BooksDataSource object. That will be up to you, in Phase 3.
         '''
-        pass
+        self.books_filename = "books.csv"
+        self.authors_filename = "authors.csv"
+        self.books_authors_link_filename = "books_authors.csv"
+
+        books_rows = read_file(books_filename)
+        authors_rows= read_file(authors_filename)
+        link_rows = read_file(books_authors_link_filename)
+
+        booksList = create_bookslist(books_rows)
+        authorsList = create_authorslist(authors_rows)
+        linkList = create_linkList(link_rows)
+
+
 
     def book(self, book_id):
         ''' Returns the book with the specified ID. (See the BooksDataSource comment
@@ -117,6 +129,11 @@ class BooksDataSource:
         return []
 
     def author(self, author_id):
+        ''' Returns the author with the specified ID. (See the BooksDataSource comment for a
+            description of how an author is represented.)
+
+            Raises ValueError if author_id is not a valid author ID.
+        '''
         try:
             authorDict = authorsList[author_id]
             lastName = authorDict.key(last_name)
@@ -124,6 +141,7 @@ class BooksDataSource:
             return {lastName, firstName}
         except ValueError:
             print('Usage: ID out of range.')
+
 
     def authors(self, *, book_id=None, search_text=None, start_year=None, end_year=None, sort_by='birth_year'):
         ''' Returns a list of all the authors in this data source matching all of the
@@ -151,3 +169,43 @@ class BooksDataSource:
             See the BooksDataSource comment for a description of how an author is represented.
         '''
         return []
+
+        def read_file(input_file):
+            rows = []
+
+            try:
+                with open(input_file, 'r') as csvfile:
+                    csvreader = csv.reader(csvfile)
+                    for row in csvreader:
+                        rows.append(row)
+                    return rows
+            except:
+                print("Usage: File not found", file=sys.stderr)
+
+        def create_bookslist(books_rows):
+            booksList = []
+            for row in books_rows:
+                dict = {
+                "id": row[0],
+                "title": row[1],
+                "publication year":, row[2],
+                }
+                booksList.append(dict)
+
+
+        def create_authorslist(authors_rows):
+            authorList = []
+            for row in authors_rows:
+                dict = {
+                'id': row[0], 'last_name': row[1], 'first_name': row[2],
+                 'birth_year': row[3], 'death_year': row[4]}
+                }
+                booksList.append(dict)
+
+        def create_linkList(link_rows):
+            linkList = []
+            for row in link_rows:
+                dict = {
+                row[0]: row[1],
+                }
+                booksList.append(dict)
