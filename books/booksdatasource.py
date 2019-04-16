@@ -201,7 +201,6 @@ class BooksDataSource:
 
 
         book_id_list = []
-        author_id=""
         # Apply book_id parameter to list
         if book_id != None:
             if int(book_id) < 0 or int(book_id) > len(self.book_list_of_Dict):
