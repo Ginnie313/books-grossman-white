@@ -92,19 +92,18 @@ class BooksDataSource:
         self.link_list_of_Dict = self.create_link_list_of_Dict()
 
 
-
-
     def book(self, book_id):
         ''' Returns the book with the specified ID. (See the BooksDataSource comment
             for a description of how a book is represented.)
 
             Raises ValueError if book_id is not a valid book ID.
         '''
-        try:
+        if book_id < 0 or book_id > len(self.book_list_of_Dict):
+            raise ValueError
+        else:
             requested_book = self.book_list_of_Dict[book_id]
             return(requested_book.get("title"))
-        except ValueError:
-            print('Usage: ID out of range.')
+
 
     def books(self, *, author_id=None, search_text=None, start_year=None, end_year=None, sort_by='title'):
         ''' Returns a list of all the books in this data source matching all of
@@ -240,4 +239,4 @@ if __name__ == '__main__':
     #print(test.author_list_of_Dict)
     #print(test.book_list_of_Dict)
     #print(test.link_list_of_Dict)
-    print(test.book(0))
+    print(test.book(100))
