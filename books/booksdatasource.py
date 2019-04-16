@@ -46,6 +46,13 @@ class BooksDataSource:
         {'id': 193, 'title': 'A Wild Sheep Chase', 'publication_year': 1982}
 
     '''
+    booksList = []
+    authorsList = []
+    linkList = []
+    author_list_of_Dict = []
+    book_list_of_Dict = []
+    link_list_of_Dict = []
+
 
     def __init__(self, books_filename, authors_filename, books_authors_link_filename):
         ''' Initializes this data source from the three specified  CSV files, whose
@@ -75,21 +82,15 @@ class BooksDataSource:
             NOTE TO STUDENTS: I have not specified how you will store the books/authors
             data in a BooksDataSource object. That will be up to you, in Phase 3.
         '''
-        self.books_filename = "books.csv"
-        self.authors_filename = "authors.csv"
-        self.books_authors_link_filename = "books_authors.csv"
 
-        books_rows = self.read_file(books_filename)
-        authors_rows= self.read_file(authors_filename)
-        link_rows = self.read_file(books_authors_link_filename)
+        self.booksList = self.create_booksList()
+        self.authorsList = self.create_authorsList()
+        self.linkList = self.create_linkList()
 
-        global booksList
-        global authorsList
-        global linkList
+        self.author_list_of_Dict = self.create_author_list_of_Dict()
+        self.book_list_of_Dict = self.create_book_list_of_Dict()
+        self.link_list_of_Dict = self.create_link_list_of_Dict()
 
-        self.booksList = self.create_bookslist(books_rows)
-        self.authorsList = self.create_authorslist(authors_rows)
-        self.linkList = self.create_linkList(link_rows)
 
 
 
@@ -100,14 +101,10 @@ class BooksDataSource:
             Raises ValueError if book_id is not a valid book ID.
         '''
         try:
-            bookDict = booksList[book_id]
-            title = bookDict.get(title)
-            firstName = bookDict.get(first_name)
-            return [title]
+            requested_book = self.book_list_of_Dict[book_id]
+            return(requested_book.get("title"))
         except ValueError:
             print('Usage: ID out of range.')
-
-        return {}
 
     def books(self, *, author_id=None, search_text=None, start_year=None, end_year=None, sort_by='title'):
         ''' Returns a list of all the books in this data source matching all of
@@ -147,10 +144,10 @@ class BooksDataSource:
             Raises ValueError if author_id is not a valid author ID.
         '''
         try:
-            authorDict = authorsList[author_id]
-            lastName = authorDict.get(last_name)
-            firstName = authorDict.get(first_name)
-            return [firstName, lastName]
+            requested_author = self.author_list_of_Dict[author_id]
+            name_list = []
+            name_list = [requested_author.get('first_name'), requested_author.get('last_name')]
+            return(name_list)
         except ValueError:
             print('Usage: ID out of range.')
 
@@ -182,42 +179,65 @@ class BooksDataSource:
         '''
         return []
 
-    def read_file(self, input_file):
-        rows = []
+    def create_booksList(self):
+        with open('books.csv', "r") as csvfile:
+            reader = csv.reader(csvfile)
 
-        try:
-            with open(input_file, 'r') as csvfile:
-                csvreader = csv.reader(csvfile)
-                for row in csvreader:
-                    rows.append(row)
-                return rows
-        except:
-            print("Usage: File not found", file=sys.stderr)
+            for book in reader:
+                self.booksList.append(book)
 
-    def create_bookslist(self, books_rows):
-        booksList = []
-        for row in books_rows:
+        return self.booksList
+
+    def create_authorsList(self):
+        with open('authors.csv', "r") as csvfile:
+            reader = csv.reader(csvfile)
+
+            for author in reader:
+                self.authorsList.append(author)
+
+        return self.authorsList
+
+    def create_linkList(self):
+        with open('books_authors.csv', "r") as csvfile:
+            reader = csv.reader(csvfile)
+
+            for id in reader:
+                self.linkList.append(id)
+
+        return self.linkList
+
+    def create_author_list_of_Dict(self):
+        for item in self.authorsList:
             dict = {
-            "id": row[0],
-            "title": row[1],
-            "publication year": row[2],
+            'id': item[0], 'last_name': item[1], 'first_name': item[2],
+            'birth_year': item[3], 'death_year': item[4]
             }
-            booksList.append(dict)
+            self.author_list_of_Dict.append(dict)
+        return self.author_list_of_Dict
 
-
-    def create_authorslist(self, authors_rows):
-        authorList = []
-        for row in authors_rows:
+    def create_book_list_of_Dict(self):
+        for item in self.booksList:
             dict = {
-            'id': row[0], 'last_name': row[1], 'first_name': row[2],
-            'birth_year': row[3], 'death_year': row[4]
+            "id": item[0],
+            "title": item[1],
+            "publication year": item[2],
             }
-            authorList.append(dict)
+            self.book_list_of_Dict.append(dict)
+        return self.book_list_of_Dict
 
-    def create_linkList(self, link_rows):
-        linkList = []
-        for row in link_rows:
+    def create_link_list_of_Dict(self):
+        for item in self.linkList:
             dict = {
-            row[0]: row[1],
+            item[0]: item[1],
             }
-            linkList.append(dict)
+            self.link_list_of_Dict.append(dict)
+        return self.link_list_of_Dict
+
+
+if __name__ == '__main__':
+    test = BooksDataSource("books.csv", "authors.csv", "books_authors.csv")
+    #print(test.authorsList)
+    #print(test.author_list_of_Dict)
+    #print(test.book_list_of_Dict)
+    #print(test.link_list_of_Dict)
+    print(test.book(0))
