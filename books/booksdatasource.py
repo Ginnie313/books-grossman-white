@@ -325,6 +325,6 @@ class BooksDataSource:
         return new_dict
 
 
+# Test object created for our own use
 if __name__ == '__main__':
     test = BooksDataSource("books.csv", "authors.csv", "books_authors.csv")
-    print(test.authors(start_year="3000"))
