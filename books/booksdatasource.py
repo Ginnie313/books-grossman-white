@@ -98,11 +98,11 @@ class BooksDataSource:
 
             Raises ValueError if book_id is not a valid book ID.
         '''
-        if book_id < 0 or book_id > len(self.book_list_of_Dict):
+        if book_id < 0 or book_id > len(self.book_list_of_Dict) - 1:
             raise ValueError
         else:
             requested_book = self.book_list_of_Dict[book_id]
-            return(requested_book.get("title"))
+            return(requested_book)
 
 
     def books(self, *, author_id=None, search_text=None, start_year=None, end_year=None, sort_by='title'):
@@ -144,9 +144,9 @@ class BooksDataSource:
         '''
         try:
             requested_author = self.author_list_of_Dict[author_id]
-            name_list = []
-            name_list = [requested_author.get('first_name'), requested_author.get('last_name')]
-        return(name_list)
+        except:
+            pass
+        return requested_author
 
 
     def authors(self, *, book_id=None, search_text=None, start_year=None, end_year=None, sort_by='birth_year'):
@@ -237,4 +237,4 @@ if __name__ == '__main__':
     #print(test.author_list_of_Dict)
     #print(test.book_list_of_Dict)
     #print(test.link_list_of_Dict)
-    print(test.author(100))
+    print(test.book(100))
