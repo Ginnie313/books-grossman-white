@@ -22,6 +22,7 @@ class BooksDataSourceTest(unittest.TestCase):
 
     #  Book function tests
 
+
     def test_zero_book(self):
         self.assertEqual(self.books_checker.book(0), {'id': '0', 'title': 'All Clear', 'publication_year': '2010'})
 
@@ -34,6 +35,7 @@ class BooksDataSourceTest(unittest.TestCase):
 
 
     # Books function tests
+
 
     def test_invalid_id_books(self):
         self.assertRaises(ValueError, self.books_checker.books, author_id="-1")
@@ -90,6 +92,7 @@ class BooksDataSourceTest(unittest.TestCase):
 
     # Authors function tests
 
+
     def test_invalid_id_authors(self):
         self.assertRaises(ValueError, self.books_checker.authors, book_id="-1")
 
@@ -102,7 +105,7 @@ class BooksDataSourceTest(unittest.TestCase):
         [{'id': '2', 'last_name': 'Morrison', 'first_name': 'Toni', 'birth_year': '1931', 'death_year': 'NULL'}])
 
     def test_start_year_is_latest_year_authors(self):
-        self.assertEqual(self.books_checker.authors(start_year="2016"),
+        self.assertEqual(self.books_checker.authors(start_year="2016", sort_by="last_name"),
         [{'id': '18', 'last_name': 'Alderman', 'first_name': 'Naomi',
          'birth_year': '1974', 'death_year': 'NULL'}, {'id': '12',
          'last_name': 'Bujold', 'first_name': 'Lois McMaster', 'birth_year': '1949',
@@ -125,14 +128,6 @@ class BooksDataSourceTest(unittest.TestCase):
         [{'id': '4', 'last_name': 'Austen', 'first_name': 'Jane',
         'birth_year': '1775', 'death_year': '1817'}])
 
-    #def test_search_by_birth_year_authors(self):
-        #self.assertEqual(self.books_checker.authors(start_year="1945", end_year="1947",
-        #sort_by="birth_year"), [["Salman", "Rushdie"], ["Connie", "Willis"]])
-
-    #def test_search_by_default_authors(self):
-        #self.assertEqual(self.books_checker.authors(start_year="1945", end_year="1947"),
-        #[["Salman", "Rushdie"], ["Connie", "Willis"]])
-
     def test_no_parameters_returns_list_authors(self):
         authorsList = self.books_checker.authors()
         self.assertTrue(authorsList, list)
@@ -140,8 +135,6 @@ class BooksDataSourceTest(unittest.TestCase):
     def test_no_parameters_returns_dictionaries_authors(self):
         authorsList = self.books_checker.authors()
         self.assertTrue(authorsList[0], dict)
-        # Because authors is an empty function, there is no list returned
-        # so authorsList is an empty list and there's an error here
 
     def test_start_year_too_big_authors(self):
         self.assertEqual(self.books_checker.authors(start_year="3000"), [])
@@ -154,6 +147,7 @@ class BooksDataSourceTest(unittest.TestCase):
 
 
     # Author function tests
+
 
     def test_zero_author(self):
         self.assertEqual(self.books_checker.author(0), {"id":"0", "last_name":"Willis",
