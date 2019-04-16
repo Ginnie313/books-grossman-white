@@ -117,12 +117,13 @@ class BooksDataSource:
         return []
 
     def author(self, author_id):
-        ''' Returns the author with the specified ID. (See the BooksDataSource comment for a
-            description of how an author is represented.)
-
-            Raises ValueError if author_id is not a valid author ID.
-        '''
-        return {}
+        try:
+            authorDict = authorsList[author_id]
+            lastName = authorDict.key(last_name)
+            firstName = authorDict.key(first_name)
+            return {lastName, firstName}
+        except ValueError:
+            print('Usage: ID out of range.')
 
     def authors(self, *, book_id=None, search_text=None, start_year=None, end_year=None, sort_by='birth_year'):
         ''' Returns a list of all the authors in this data source matching all of the
