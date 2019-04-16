@@ -95,6 +95,14 @@ class BooksDataSource:
 
             Raises ValueError if book_id is not a valid book ID.
         '''
+        try:
+            bookDict = booksList[book_id]
+            title = bookDict.key(title)
+            firstName = bookDict.key(first_name)
+            return [title]
+        except ValueError:
+            print('Usage: ID out of range.')
+
         return {}
 
     def books(self, *, author_id=None, search_text=None, start_year=None, end_year=None, sort_by='title'):
@@ -138,7 +146,7 @@ class BooksDataSource:
             authorDict = authorsList[author_id]
             lastName = authorDict.key(last_name)
             firstName = authorDict.key(first_name)
-            return {lastName, firstName}
+            return [firstName, lastName]
         except ValueError:
             print('Usage: ID out of range.')
 
