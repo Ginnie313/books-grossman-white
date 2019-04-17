@@ -1,0 +1,46 @@
+BooksDataSource Test Results, 17 April 2019
+by Kate Grossman and Ginnie White
+Other group (1): Ankit Sanghi, Daniel Kleber
+Other group (2): Allison Kim, Madeline Emmon
+
+Our compiling process went okay. Everything ran once I changed the imports in
+our test file to reflect the new code.
+
+For Daniel and Ankit:
+
+These tests failed because our tests have their numerical values as strings and
+their code is not set up to handle those.
+
+1-test_end_year_books
+2-test_end_year_is_earliest_year_authors
+3-test_end_year_too_small_authors
+4-test_end_year_too_small_books
+5-test_invalid_id_authors
+6-test_larger_than_max_author
+7-test_larger_than_max_book
+8-test_negative_author
+9-test_negative_book
+10-test_search_by_title_books
+11-test_search_by_year_books (
+12-test_start_year__default_books
+13-test_start_year_is_latest_year_authors
+14-test_start_year_too_big_authors
+15-test_start_year_too_big_books
+16-test_valid_id_authors
+17-test_valid_id_books
+18-test_invalid_id_books
+
+
+These tests failed because their dictionary returned with numerical values and
+our test dictionaries have strings:
+19-test_search_text_authors
+20-test_search_text_books
+21-test_zero_author
+22-test_zero_book (
+
+These tests passed because their code does return a list of dictionaries when
+authors and books have no parameters:
+23-test_no_parameters_returns_list_books
+24-test_no_parameters_returns_dictionaries_books
+25-test_no_parameters_returns_list_authors
+26-test_no_parameters_returns_dictionaries_authors
