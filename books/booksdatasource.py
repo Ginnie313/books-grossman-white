@@ -232,11 +232,11 @@ class BooksDataSource:
         # Apply start_year parameter to list
         if start_year != None:
             for book in search_text_authors_list:
-                if book.get('death_year') != "NULL" and int(book.get('death_year')) >= int(start_year):
+                if book.get('death_year') != "None" and int(book.get('death_year')) >= int(start_year):
                     start_year_authors_list.append(book)
                 if int(book.get('birth_year')) >= int(start_year):
                     start_year_authors_list.append(book)
-                if book.get('death_year') == "NULL" and int(book.get('birth_year')) <= int(start_year):
+                if book.get('death_year') == "None" and int(book.get('birth_year')) <= int(start_year):
                     start_year_authors_list.append(book)
                 if int(start_year) > 2019:
                     start_year_authors_list = []
@@ -247,7 +247,7 @@ class BooksDataSource:
         # Apply start_year end_year parameters to list
         if end_year != None:
             for book in start_year_authors_list:
-                if book.get('death_year')!= "NULL" and int(book.get('birth_year')) <= int(end_year):
+                if book.get('death_year')!= "None" and int(book.get('birth_year')) <= int(end_year):
                     end_year_authors_list.append(book)
         else:
             end_year_authors_list = start_year_authors_list
@@ -292,10 +292,16 @@ class BooksDataSource:
     def create_author_list_of_Dict(self):
         self.author_list_of_Dict = []
         for item in self.authorsList:
-            dict = {
-            'id': item[0], 'last_name': item[1], 'first_name': item[2],
-            'birth_year': item[3], 'death_year': item[4]
-            }
+            if item[4] != "NULL":
+                dict = {
+                'id': item[0], 'last_name': item[1], 'first_name': item[2],
+                'birth_year': item[3], 'death_year': item[4]
+                }
+            else:
+                dict = {
+                'id': item[0], 'last_name': item[1], 'first_name': item[2],
+                'birth_year': item[3], 'death_year': "None"
+                }
             self.author_list_of_Dict.append(dict)
 
     def create_book_list_of_Dict(self):
@@ -327,3 +333,4 @@ class BooksDataSource:
 # Test object created for our own use
 if __name__ == '__main__':
     test = BooksDataSource("books.csv", "authors.csv", "books_authors.csv")
+    print(test.author_list_of_Dict)

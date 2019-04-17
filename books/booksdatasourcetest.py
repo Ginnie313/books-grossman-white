@@ -98,30 +98,30 @@ class BooksDataSourceTest(unittest.TestCase):
 
     def test_valid_id_authors(self):
         self.assertEqual(self.books_checker.authors(book_id="0"),
-        [{'id': '0', 'last_name': 'Willis', 'first_name': 'Connie', 'birth_year': '1945', 'death_year': 'NULL'}])
+        [{'id': '0', 'last_name': 'Willis', 'first_name': 'Connie', 'birth_year': '1945', 'death_year': 'None'}])
 
     def test_search_text_authors(self):
         self.assertEqual(self.books_checker.authors(search_text="Toni"),
-        [{'id': '2', 'last_name': 'Morrison', 'first_name': 'Toni', 'birth_year': '1931', 'death_year': 'NULL'}])
+        [{'id': '2', 'last_name': 'Morrison', 'first_name': 'Toni', 'birth_year': '1931', 'death_year': 'None'}])
 
     def test_start_year_is_latest_year_authors(self):
         self.assertEqual(self.books_checker.authors(start_year="2016", sort_by="last_name"),
         [{'id': '18', 'last_name': 'Alderman', 'first_name': 'Naomi',
-         'birth_year': '1974', 'death_year': 'NULL'}, {'id': '12',
+         'birth_year': '1974', 'death_year': 'None'}, {'id': '12',
          'last_name': 'Bujold', 'first_name': 'Lois McMaster', 'birth_year': '1949',
-         'death_year': 'NULL'}, {'id': '24', 'last_name': 'Carré', 'first_name': 'John Le',
-          'birth_year': '1931', 'death_year': 'NULL'}, {'id': '5', 'last_name': 'Gaiman',
-           'first_name': 'Neil', 'birth_year': '1960', 'death_year': 'NULL'},
+         'death_year': 'None'}, {'id': '24', 'last_name': 'Carré', 'first_name': 'John Le',
+          'birth_year': '1931', 'death_year': 'None'}, {'id': '5', 'last_name': 'Gaiman',
+           'first_name': 'Neil', 'birth_year': '1960', 'death_year': 'None'},
            {'id': '20', 'last_name': 'Jemisen', 'first_name': 'N.K.',
-           'birth_year': '1972', 'death_year': 'NULL'}, {'id': '3', 'last_name': 'Lewis',
-            'first_name': 'Sinclair', 'birth_year': '1885', 'death_year': 'NULL'},
+           'birth_year': '1972', 'death_year': 'None'}, {'id': '3', 'last_name': 'Lewis',
+            'first_name': 'Sinclair', 'birth_year': '1885', 'death_year': 'None'},
             {'id': '2', 'last_name': 'Morrison', 'first_name': 'Toni',
-            'birth_year': '1931', 'death_year': 'NULL'}, {'id': '16', 'last_name': 'Murakami',
-            'first_name': 'Haruki', 'birth_year': '1949', 'death_year': 'NULL'},
+            'birth_year': '1931', 'death_year': 'None'}, {'id': '16', 'last_name': 'Murakami',
+            'first_name': 'Haruki', 'birth_year': '1949', 'death_year': 'None'},
             {'id': '11', 'last_name': 'Rushdie', 'first_name': 'Salman',
-             'birth_year': '1947', 'death_year': 'NULL'},
+             'birth_year': '1947', 'death_year': 'None'},
               {'id': '0', 'last_name': 'Willis', 'first_name': 'Connie',
-               'birth_year': '1945', 'death_year': 'NULL'}])
+               'birth_year': '1945', 'death_year': 'None'}])
 
     def test_end_year_is_earliest_year_authors(self):
         self.assertEqual(self.books_checker.authors(end_year="1776"),
@@ -151,7 +151,7 @@ class BooksDataSourceTest(unittest.TestCase):
 
     def test_zero_author(self):
         self.assertEqual(self.books_checker.author(0), {"id":"0", "last_name":"Willis",
-        "first_name": "Connie", "birth_year":"1945", 'death_year': 'NULL'})
+        "first_name": "Connie", "birth_year":"1945", 'death_year': 'None'})
 
     def test_negative_author(self):
         self.assertRaises(ValueError,self.books_checker.author, "-1")
