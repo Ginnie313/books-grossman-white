@@ -4,7 +4,7 @@
     Modified by Eric Alexander, April 2019
     For use in some assignments at the beginning of Carleton's
     CS 257 Software Design class.
-    
+
     Methods implemented by Ginnie White and Kate Grossman
 '''
 import csv
@@ -75,7 +75,7 @@ class BooksDataSource:
             for a description of how a book is represented.)
             Raises ValueError if book_id is not a valid book ID.
         '''
-        if int(book_id) < 0 or int(book_id) > len(self.book_list_of_Dict):
+        if int(book_id) < 0 or int(book_id) > len(self.book_list_of_Dict)-1:
             raise ValueError("The ID is out of range.")
         else:
             requested_book = self.book_list_of_Dict[int(book_id)]
@@ -113,7 +113,7 @@ class BooksDataSource:
         author_id_list = []
         # Apply author_id parameter to list
         if author_id != None:
-            if int(author_id) < 0 or int(author_id) > len(self.author_list_of_Dict):
+            if int(author_id) < 0 or int(author_id) > len(self.author_list_of_Dict)-1:
                 raise ValueError
 
             book_id_list = []
@@ -166,7 +166,7 @@ class BooksDataSource:
             description of how an author is represented.)
             Raises ValueError if author_id is not a valid author ID.
         '''
-        if int(author_id) < 0 or int(author_id) > len(self.author_list_of_Dict):
+        if int(author_id) < 0 or int(author_id) > len(self.author_list_of_Dict) -1:
             raise ValueError("The ID is out of range.")
         else:
             requested_author = self.author_list_of_Dict[int(author_id)]
@@ -203,7 +203,7 @@ class BooksDataSource:
         book_id_list = []
         # Apply book_id parameter to list
         if book_id != None:
-            if int(book_id) < 0 or int(book_id) > len(self.book_list_of_Dict):
+            if int(book_id) < 0 or int(book_id) > len(self.book_list_of_Dict) -1:
                 raise ValueError
                 print("Value error detected")
             author_id_list = []
@@ -318,7 +318,7 @@ class BooksDataSource:
             self.link_list_of_Dict.append(dict)
         return self.link_list_of_Dict
 
-    # Turn all keys in dictionary to lower case    
+    # Turn all keys in dictionary to lower case
     def lower_case_dict(self, dictionary):
         new_dict = dict((k.lower(), v.lower()) for k, v in dictionary.items())
         return new_dict
