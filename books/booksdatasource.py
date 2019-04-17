@@ -106,9 +106,9 @@ class BooksDataSource:
         '''
 
         if sort_by == 'year':
-            sorted_books = sorted(self.book_list_of_Dict, key = lambda i: i["publication_year"])
+            sorted_books = sorted(self.book_list_of_Dict, key = lambda i: (i["publication_year"], i["title"]))
         else:
-            sorted_books = sorted(self.book_list_of_Dict, key = lambda i: i["title"])
+            sorted_books = sorted(self.book_list_of_Dict, key = lambda i: (i["title"], i["publication_year"]))
 
         author_id_list = []
         # Apply author_id parameter to list
